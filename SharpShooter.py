@@ -167,8 +167,7 @@ class SharpShooter:
         return content
 
     def rand_key(self, n):
-        letters = string.ascii_lowercase
-        return ''.join([random.choice(letters) for i in range(n)])
+        return ''.join([random.choice(string.ascii_lowercase) for i in range(n)])
 
     def gzip_str(self, string_):
         fgz = BytesIO()
@@ -324,7 +323,7 @@ End Sub"""
             elif(payload_type == 9):
                 file_type = "slk"
         except Exception as e:
-            print("\n\033[1;31m[!]\033[0;0m Incorrect choice 1")
+            print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
 
         sandbox_techniques=""
         techniques_list = []
@@ -400,7 +399,7 @@ End Sub"""
                     break
 
             except Exception as e:
-                print("\n\033[1;31m[!]\033[0;0m Incorrect choice 2")
+                print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
 
         template_code = template_body.replace("%SANDBOX_ESCAPES%", sandbox_techniques)
 
@@ -494,8 +493,7 @@ End Sub"""
                 break
             except Exception as e:
                 print(e)
-                print("\n\033[1;31m[!]\033[0;0m Incorrect choice 3")
-                raise(e)
+                print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
                 sys.exit(-1)
 
         amsi_bypass = ""
