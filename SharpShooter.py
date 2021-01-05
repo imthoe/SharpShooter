@@ -444,7 +444,7 @@ End Sub"""
                     #    sc_split = [encoded_sc[i:i+100] for i in range(0, len(encoded_sc), 100)]
                     #    for i in sc_split:
                     #else:
-                    template_code = template_code.replace("%SHELLCODE64%", encoded_sc.decode('ascii'))
+                    template_code = template_code.replace("%SHELLCODE64%", encoded_sc.decode('utf-8'))
 
                 else:
                     refs = args.refs
@@ -516,13 +516,13 @@ End Sub"""
 
         key = self.rand_key(10)
         payload_encrypted = self.rc4(key, template_code)
-        payload_encoded = base64.b64encode(payload_encrypted)
+        payload_encoded = base64.b64encode(payload_encrypted).decode('utf-8')
 
         awl_payload_simple = ""
 
         if("js" in file_type or args.comtechnique):
             harness = self.read_file("templates/harness.js")
-            payload = harness.replace("%B64PAYLOAD%", payload_encoded.decode('ascii'))
+            payload = harness.replace("%B64PAYLOAD%", payload_encoded)
             payload = payload.replace("%KEY%", "'%s'" % (key))
             payload_minified = jsmin(payload)
             awl_payload_simple = template_code
@@ -582,7 +582,7 @@ End Sub"""
         if shellcode_delivery:
             outputfile_shellcode = outputfile + ".payload"
             with open("output/" + outputfile_shellcode, 'w') as f:
-                gzip_encoded = base64.b64encode(shellcode_gzip.getvalue())
+                gzip_encoded = base64.b64encode(shellcode_gzip.getvalue()).decode('utf-8')
                 f.write(gzip_encoded)
                 f.close()
                 print("\033[1;34m[*]\033[0;0m Written shellcode payload to output/%s" % outputfile_shellcode)
